@@ -1,5 +1,11 @@
+import { UserButton } from "@clerk/nextjs";
+
 const SetupPage = () => {
-	return <div className='p-4'>This is A Protected Route!</div>;
+	return (
+		<div className='p-4'>
+			<UserButton afterSignOutUrl='/' />
+		</div>
+	);
 };
 
 export default SetupPage;
