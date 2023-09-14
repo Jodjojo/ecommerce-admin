@@ -2,6 +2,9 @@
 
 import * as z from "zod";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useStoreModal } from "@/hooks/use-store-modal";
@@ -26,6 +29,9 @@ const formSchema = z.object({
 export const StoreModal = () => {
 	const StoreModal = useStoreModal();
 
+	///Create a new usestate for the Store model
+	const [loading, setLoading] = useState(false);
+
 	/// define hook for form
 	const form = useForm<z.infer<typeof formSchema>>({
 		///use a zod resolver to validate the form using zod
@@ -38,8 +44,22 @@ export const StoreModal = () => {
 	///use an async onSubmit function that will be triggered
 
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
-		console.log(values);
-		//TODO: ctreate store
+		///Run the modal store handling using the try, catch and finally option
+		try {
+			setLoading(true);
+
+			///Create a new store using axios to create the api endpoint for the store using the values from the form which is saved from the default values
+			///The /api/stores routing is the equivalent of the next 13 folder routing since the stores folder is in the api folder under app main folder
+			const response = await axios.post("/api/stores", values);
+
+			///use the toast package to also display a success message
+			toast.success("Store Created");
+		} catch (error) {
+			///use the react-hot-toast to display an error that something went wrong
+			toast.error("Something went wrong");
+		} finally {
+			setLoading(false);
+		}
 	};
 	return (
 		<Modal
@@ -61,7 +81,11 @@ export const StoreModal = () => {
 										<FormLabel>Name</FormLabel>
 										<FormControl>
 											{/* /// pass input and spread the entire field prop  into it that has all the on functions of the input normally */}
-											<Input placeholder='E-commerce' {...field} />
+											<Input
+												placeholder='E-commerce'
+												{...field}
+												disabled={loading} /// using the useState Loading we just created
+											/>
 										</FormControl>
 										{/* ///Use of form Message for setting error messages or other types of messages we want to see on the form */}
 										<FormMessage />
@@ -70,10 +94,17 @@ export const StoreModal = () => {
 							/>
 							<div className='pt-6 space-x-2 flex items-center justify-end w-full'>
 								{/* ///run 2 buttons one for submit using the storeModal onClose function then the other with the type set to submit, */}
-								<Button variant='outline' onClick={StoreModal.onClose}>
+								<Button
+									variant='outline'
+									onClick={StoreModal.onClose}
+									disabled={loading} ///to prevent user from canceling if its loading
+								>
 									Cancel
 								</Button>
-								<Button type='submit'>Continue</Button>
+								<Button type='submit' disabled={loading}>
+									Continue
+								</Button>
+								{/* To prevent user from resubmitting form when it is already loading */}
 							</div>
 						</form>
 					</Form>
