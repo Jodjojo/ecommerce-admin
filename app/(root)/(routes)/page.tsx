@@ -16,7 +16,8 @@ const SetupPage = () => {
 		}
 	}, [isOpen, onOpen]);
 
-	return <div className='p-4'>Root Page</div>;
+	///since we only want to use the setup page to return the modal we dont particularly have to return anything
+	return null;
 };
 
 export default SetupPage;
