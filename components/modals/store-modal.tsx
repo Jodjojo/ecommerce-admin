@@ -52,8 +52,10 @@ export const StoreModal = () => {
 			///The /api/stores routing is the equivalent of the next 13 folder routing since the stores folder is in the api folder under app main folder
 			const response = await axios.post("/api/stores", values);
 
-			///use the toast package to also display a success message
-			toast.success("Store Created");
+			///to immediately redirect to the dashboard after each store is created
+			///since the response stores the data that is newly created
+			///window.location.asign will do a complete refresh on our page making the new store 100% loaded in the database
+			window.location.assign(`/${response.data.id}`);
 		} catch (error) {
 			///use the react-hot-toast to display an error that something went wrong
 			toast.error("Something went wrong");
