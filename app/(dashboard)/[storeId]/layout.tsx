@@ -1,5 +1,7 @@
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs";
+import Navbar from "@/components/navbar";
+
 import { redirect } from "next/navigation";
 
 export default async function DahboardLayout({
@@ -33,7 +35,8 @@ export default async function DahboardLayout({
 	///else we return a fragment that will in the future return a nav bar
 	return (
 		<>
-			<div>This will be a nav bar</div>
+			{/* We render the navbar component which we will then create under the components folder */}
+			<Navbar />
 			{children}
 		</>
 	);
