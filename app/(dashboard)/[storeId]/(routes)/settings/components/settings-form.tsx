@@ -24,6 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { AlertModal } from "@/components/modals/alert-modal";
 import { ApiAlert } from "@/components/ui/api-alert";
+import { useOrigin } from "@/hooks/use-origin";
 
 ///We use the interface to pass the store into the  settings form
 interface SettingsFormProps {
@@ -45,6 +46,9 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
 	const params = useParams();
 	///we will also need a router
 	const router = useRouter();
+
+	///we will declare a variable to store the origin hook to use for the description lof the API alert instead
+	const origin = useOrigin;
 	///set usestates that will handle form loading and opening and the alert modal
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
