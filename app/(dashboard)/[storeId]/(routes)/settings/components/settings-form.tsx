@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { AlertModal } from "@/components/modals/alert-modal";
+import { ApiAlert } from "@/components/ui/api-alert";
 
 ///We use the interface to pass the store into the  settings form
 interface SettingsFormProps {
@@ -162,6 +163,14 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
 					</Button>
 				</form>
 			</Form>
+			{/* We use the separator to differentiate components */}
+			<Separator />
+			<ApiAlert
+				title='NEXT_PUBLIC_API_URL'
+				///we then dynamically render the api using the origin hook we just created and the store ID so that gives the api route to access that store and connect it to the API
+				description={`${origin}/api/${params.storeId}`}
+				variant='public'
+			/>
 		</>
 	);
 };
