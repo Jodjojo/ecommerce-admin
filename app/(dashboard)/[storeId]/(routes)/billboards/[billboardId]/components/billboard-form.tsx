@@ -1,9 +1,11 @@
 "use client";
+///the form that will be created or activated when a user wants to create a new billboard or update an existing one
+///we use the settings form format as a template for this form
 
 import * as z from "zod";
 import { useState } from "react";
-import { Store } from "@prisma/client";
 import { useForm } from "react-hook-form";
+import { Billboard } from "@prisma/client";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
@@ -26,22 +28,27 @@ import { AlertModal } from "@/components/modals/alert-modal";
 import { ApiAlert } from "@/components/ui/api-alert";
 import { useOrigin } from "@/hooks/use-origin";
 
-///We use the interface to pass the store into the  settings form
-interface SettingsFormProps {
-	initialData: Store;
-}
-
 ///Add the form Schema to store the model for the form using Zod
 const formSchema = z.object({
-	///the name of schema ppt then z.type.minimum character expected
-	name: z.string().min(1),
+	///the label of billboard schema ppt then z.type.minimum character expected
+	label: z.string().min(1),
+	///the image URL of the billboard schema
+	imageUrl: z.string().min(1),
 });
 
 ///The type for the settings form values to make the schema reusable
-type SettingsFormValues = z.infer<typeof formSchema>;
+type BillboardFormValues = z.infer<typeof formSchema>;
+
+///We use the interface to pass the store into the  settings form
+interface BillboardFormProps {
+	///we use the Billboard as the inital data of the prop or null if billbpard is not found
+	initialData: Billboard | null;
+}
 
 /// Handle the interface below
-export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
+export const BillboardForm: React.FC<BillboardFormProps> = ({
+	initialData,
+}) => {
 	///we get our params so we can dynamically return to the store id router after update
 	const params = useParams();
 	///we will also need a router
@@ -53,14 +60,25 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 
+	///we create new variables that will help check if there is initial data (ie billboard aready exists)to dynamically edit the props  of the billboard form else we create a new billboard
+	const title = initialData ? "Edit Billboard" : "Create Billboard";
+	const description = initialData ? "Edit a Billboard" : "Add a new Billboard";
+	const toastMessage = initialData
+		? "Billboard updated."
+		: "Billboard created.";
+	const action = initialData ? "Save changes" : "Create";
+
 	///create form for settings AND use the reusable settings form values
-	const form = useForm<SettingsFormValues>({
+	const form = useForm<BillboardFormValues>({
 		resolver: zodResolver(formSchema), ///passing the schema into the zod resolver to create the form
-		defaultValues: initialData, ///giving it default values of the initial data which is the prop we are passing in
+		defaultValues: initialData || {
+			label: "",
+			imageUrl: "",
+		}, ///giving it default values of the initial data which is the prop we are passing in and setting it automatically to empty strings if the initial Data does not exist which is a billboard schema
 	});
 
 	///create our own on submit function for handling what is executed on submit
-	const onSubmit = async (data: SettingsFormValues) => {
+	const onSubmit = async (data: BillboardFormValues) => {
 		try {
 			///setLoading to true
 			setLoading(true);
@@ -116,17 +134,20 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
 
 			{/*  */}
 			<div className='flex items-center justify-between'>
-				<Heading title='Settings' description='Manage store Preferences' />
+				<Heading title={title} description={description} />
 				{/* The button component will be added to close the store  */}
-				<Button
-					disabled={loading}
-					variant='destructive'
-					size='icon'
-					onClick={() => setOpen(true)} ///onClick is going to setOpen to true meaning to open the modal
-				>
-					{/* It is going to hold the icon that can serve as a recycling bin icon */}
-					<Trash className='h-4 w-4' />
-				</Button>
+				{/* We put a conditional to determine if that delete button will show i this billboard form like the settings form or not*/}
+				{initialData && (
+					<Button
+						disabled={loading}
+						variant='destructive'
+						size='icon'
+						onClick={() => setOpen(true)} ///onClick is going to setOpen to true meaning to open the modal
+					>
+						{/* It is going to hold the icon that can serve as a recycling bin icon */}
+						<Trash className='h-4 w-4' />
+					</Button>
+				)}
 			</div>
 			{/* We add a separator from shad cn ui */}
 			<Separator />
@@ -142,16 +163,16 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
 						{/* FormField is going to be used to control the overall form field */}
 						<FormField
 							control={form.control}
-							name='name'
+							name='label'
 							///The render prop will render the content in form items
 							render={({ field }) => (
 								<FormItem>
 									{/* Form label is label of form input */}
-									<FormLabel>Name</FormLabel>
+									<FormLabel>Label</FormLabel>
 									<FormControl>
 										<Input
 											disabled={loading}
-											placeholder='Store name'
+											placeholder='Billboard Label'
 											{...field} ///we spread the field so the input automatticaly gets all the onChange, onBlur and values from the formfield
 										/>
 									</FormControl>
@@ -163,18 +184,12 @@ export const SettingsForm: React.FC<SettingsFormProps> = ({ initialData }) => {
 					</div>
 					{/* Setting the button prop to disabled on Loading makes it inactive when button is loading */}
 					<Button disabled={loading} className='ml-auto' type='submit'>
-						Save Changes
+						{action}
 					</Button>
 				</form>
 			</Form>
 			{/* We use the separator to differentiate components */}
 			<Separator />
-			<ApiAlert
-				title='NEXT_PUBLIC_API_URL'
-				///we then dynamically render the api using the origin hook we just created and the store ID so that gives the api route to access that store and connect it to the API
-				description={`${origin}/api/${params.storeId}`}
-				variant='public'
-			/>
 		</>
 	);
 };

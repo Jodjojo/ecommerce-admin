@@ -11,10 +11,27 @@ datasource db {
   relationMode = "prisma"
 }
 
+//model for store
 model Store {
   id       String @id @default(uuid())
   name     String
   userId   String
+  ///relation works like keys in normal mySql databases so we are relating this billboard to the poarent stores using relation
+  billboards Billboard[] @relation("StoreToBillboard")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+//we create a mdoel for our billboard
+model Billboard {
+  id String @id @default(uuid())
+  storeId String
+  ///this store property is tageting the filed storeIds and referening the id in the store
+  store Store @relation("StoreToBillboard", fields: [storeId], references: [id])
+  label String
+  imageUrl String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([storeId]) ///to fix the warning of the store relation using an index declarator 
 }
