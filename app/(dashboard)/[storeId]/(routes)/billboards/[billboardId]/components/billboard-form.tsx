@@ -83,14 +83,22 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 		try {
 			///setLoading to true
 			setLoading(true);
-
-			///to reroute to the api of the store id after update
-			await axios.patch(`/api/stores/${params.storeId}`, data);
+			///we will wrap this whole routing to the if clause of if we have initial data
+			if (initialData) {
+				///if there is no initial data then we want to edit this route
+				await axios.patch(
+					`/api/${params.storeId}/billboards/${params.billboardId}`,
+					data
+				);
+			} else {
+				///we want to create a new billboar
+				await axios.post(`/api/${params.storeId}/billboards`, data);
+			}
 			///to resync server component which fetches our store and calls it again to get our new updated data
 			router.refresh();
 
-			///we then fire toast to show sucess message
-			toast.success("Store Updated");
+			///we then fire toast to toast Message according to whether we have initial data or not
+			toast.success(toastMessage);
 		} catch (error) {
 			///we use the toast error to display the error message
 			toast.error("Something went wrong");
@@ -105,17 +113,21 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 		try {
 			setLoading(true);
 			///we use the axios package to delete the route we establish using the store id
-			await axios.delete(`/api/stores/${params.storeId}`);
+			await axios.delete(
+				`/api/${params.storeId}/billboards/${params.billboardId}`
+			);
 			///then we refresh the router
 			router.refresh();
 			///router.push to reroute back to a particular route after event has been executed
 			router.push("/"); ///which is the root route
 
 			///pass in a success message using toast
-			toast.success("Store deleted.");
+			toast.success("Billboard deleted.");
 		} catch (error) {
 			///even though we have not implemented products and categories, it wont be possible when we are done to delete stores with active products and categories available
-			toast.error("Make sure you removed all Products and Categories first ");
+			toast.error(
+				"Make sure you removed all Categories using this billboard first."
+			);
 		} finally {
 			///we set the loading to be flase and the setOpen to be false so after we can close the Modal
 			setLoading(false);
