@@ -1,15 +1,16 @@
 "use client";
 import { Plus } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { Billboard } from "@prisma/client";
 
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
+import { BillboardColumn, columns } from "./columns";
+import { DataTable } from "@/components/ui/data-table";
 
-///we create an interface that will handle the data as an argument into the billboard client from the billboard page
+///we create an interface that will handle the data as an argument into the billboard client from the billboardColumn
 interface BillboardClientProps {
-	data: Billboard[];
+	data: BillboardColumn[];
 }
 
 /// client component where we are going to load all our billboards from
@@ -38,6 +39,8 @@ export const BillboardClient: React.FC<BillboardClientProps> = ({ data }) => {
 				</Button>
 			</div>
 			<Separator />
+			{/* 	We will then add a data table here: pass the columns from the one we created in components folder and render the data from the interface   */}
+			<DataTable columns={columns} data={data} />
 		</>
 	);
 };
