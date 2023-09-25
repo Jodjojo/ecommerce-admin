@@ -1,20 +1,25 @@
 "use client";
 
 ///the data table component we will use for the billboards page gotten from the shadcn Ui library
-///we import the button component here
-import { Button } from "./button";
 
 ///sorting
 import * as React from "react";
 import {
 	ColumnDef,
 	SortingState, ///sorting model from Shadcn
+	ColumnFiltersState, ///filtering table from shadcn
 	flexRender,
 	getCoreRowModel,
+	getFilteredRowModel,
 	getPaginationRowModel, ///we use the model from Shadcn for pagination
 	getSortedRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
+
+///we import the button component here
+import { Button } from "@/components/ui/button";
+//we import input component here
+import { Input } from "@/components/ui/input";
 
 import {
 	Table,
@@ -28,14 +33,21 @@ import {
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
+	///we want to make searching and filtering dynamic so we create a searchkey prop
+	searchKey: string;
 }
 
 export function DataTable<TData, TValue>({
 	columns,
 	data,
+	searchKey,
 }: DataTableProps<TData, TValue>) {
 	////sorting
 	const [sorting, setSorting] = React.useState<SortingState>([]);
+	///filtering
+	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+		[]
+	);
 	const table = useReactTable({
 		data,
 		columns,
@@ -44,13 +56,29 @@ export function DataTable<TData, TValue>({
 		////sorting
 		onSortingChange: setSorting,
 		getSortedRowModel: getSortedRowModel(),
+		///filtering
+		onColumnFiltersChange: setColumnFilters,
+		getFilteredRowModel: getFilteredRowModel(),
 		state: {
-			sorting,
+			sorting, ///sorting
+			columnFilters, ///filtering
 		},
 	});
 
 	return (
 		<div>
+			{/* ///filtering using the shadcn component and filtering the label column*/}
+			<div className='flex items-center py-4'>
+				<Input
+					placeholder='Search'
+					value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
+					onChange={(event) =>
+						table.getColumn(searchKey)?.setFilterValue(event.target.value)
+					}
+					className='max-w-sm'
+				/>
+			</div>
+			{/* ////////////// */}
 			<div className='rounded-md border'>
 				<Table>
 					<TableHeader>

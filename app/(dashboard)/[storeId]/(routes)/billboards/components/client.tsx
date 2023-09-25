@@ -40,7 +40,8 @@ export const BillboardClient: React.FC<BillboardClientProps> = ({ data }) => {
 			</div>
 			<Separator />
 			{/* 	We will then add a data table here: pass the columns from the one we created in components folder and render the data from the interface   */}
-			<DataTable columns={columns} data={data} />
+			{/* /We set the searchkey to label so that is what the prop searches through */}
+			<DataTable columns={columns} data={data} searchKey='label' />
 		</>
 	);
 };
