@@ -25,8 +25,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { AlertModal } from "@/components/modals/alert-modal";
-import { ApiAlert } from "@/components/ui/api-alert";
-import { useOrigin } from "@/hooks/use-origin";
 import ImageUpload from "@/components/ui/image-upload";
 
 ///Add the form Schema to store the model for the form using Zod
@@ -55,8 +53,6 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 	///we will also need a router
 	const router = useRouter();
 
-	///we will declare a variable to store the origin hook to use for the description lof the API alert instead
-	const origin = useOrigin();
 	///set usestates that will handle form loading and opening and the alert modal
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
