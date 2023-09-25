@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import CellAction from "./cell-action";
 
 export type BillboardColumn = {
 	id: string;
@@ -31,5 +32,11 @@ export const columns: ColumnDef<BillboardColumn>[] = [
 				</Button>
 			);
 		},
+	},
+	{
+		///for executing cell actions
+		id: "actions",
+		///for the cell we are going to pass the data as the row original to access the original object the cell is working with
+		cell: ({ row }) => <CellAction data={row.original} />,
 	},
 ];
