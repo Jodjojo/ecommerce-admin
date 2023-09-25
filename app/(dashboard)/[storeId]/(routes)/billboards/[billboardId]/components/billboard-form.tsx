@@ -96,7 +96,8 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 			}
 			///to resync server component which fetches our store and calls it again to get our new updated data
 			router.refresh();
-
+			///After we submit our page we want to redirect back to the home billboards page
+			router.push(`/${params.storeId}/billboards`);
 			///we then fire toast to toast Message according to whether we have initial data or not
 			toast.success(toastMessage);
 		} catch (error) {

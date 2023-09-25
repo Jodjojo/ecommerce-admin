@@ -20,7 +20,7 @@ export async function POST(req: Request) {
 
 		// Check if name is inputed and fits the db table requirement
 		if (!name) {
-			return new NextResponse("Name is requried", { status: 500 });
+			return new NextResponse("Name is requried", { status: 400 });
 		}
 
 		///create store Model instance after the id and name checks have been fulfilled using prismadb
