@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { AlertModal } from "@/components/modals/alert-modal";
 import { ApiAlert } from "@/components/ui/api-alert";
 import { useOrigin } from "@/hooks/use-origin";
+import ImageUpload from "@/components/ui/image-upload";
 
 ///Add the form Schema to store the model for the form using Zod
 const formSchema = z.object({
@@ -158,6 +159,31 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 					onSubmit={form.handleSubmit(onSubmit)}
 					className='space-y-8 w-full'
 				>
+					{/* ///////////////////////////////////////// */}
+					{/* Reusing the Form field here for the add new Image form  */}
+					<FormField
+						control={form.control}
+						name='imageUrl'
+						///The render prop will render the content in form items
+						render={({ field }) => (
+							<FormItem>
+								{/* Form label is label of form input */}
+								<FormLabel>Background Image</FormLabel>
+								<FormControl>
+									{/* We then add the imageUpload component we just created */}
+									{/* Since the imageUpload component expects an array of field values we use the conditional in an array */}
+									<ImageUpload
+										value={field.value ? [field.value] : []}
+										disabled={loading}
+										onChange={(url) => field.onChange(url)}
+										onRemove={() => field.onChange("")}
+									/>
+								</FormControl>
+								{/* We use form messager to give a proper error if there is a problem in form field */}
+								<FormMessage />
+							</FormItem>
+						)}
+					/>
 					{/* This div will store the contents and properties of control of the form in grid */}
 					<div className='grid grid-cols-3 gap-8'>
 						{/* FormField is going to be used to control the overall form field */}
