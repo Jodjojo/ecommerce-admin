@@ -7,7 +7,7 @@ const CategoryPage = async ({
 	///extract the params
 	params,
 }: {
-	params: { categoryId: string };
+	params: { categoryId: string; storeId: string };
 }) => {
 	/// fetch an existing category using the id in our url
 	const category = await prismadb.category.findUnique({
@@ -16,11 +16,18 @@ const CategoryPage = async ({
 		},
 	});
 
+	///we want to fetch our billboards
+	const billboards = await prismadb.billboard.findMany({
+		where: {
+			storeId: params.storeId,
+		},
+	});
+
 	///we dynamically render the form if it is for a new dashboard to be created for for the admin to update or edit existing category
 	return (
 		<div className='flex-col'>
 			<div className='flex-1 space-y-4 p-8 pt-6'>
-				<CategoryForm initialData={category} />
+				<CategoryForm billboards={billboards} initialData={category} />
 			</div>
 		</div>
 	);

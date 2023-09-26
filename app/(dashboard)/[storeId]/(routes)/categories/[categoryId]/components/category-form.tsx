@@ -5,7 +5,7 @@
 import * as z from "zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Category } from "@prisma/client";
+import { Billboard, Category } from "@prisma/client";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
@@ -25,7 +25,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { AlertModal } from "@/components/modals/alert-modal";
-import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 
 ///Add the form Schema to store the model for the form using Zod
 const formSchema = z.object({
@@ -42,10 +48,15 @@ type CategoryFormValues = z.infer<typeof formSchema>;
 interface CategoryFormProps {
 	///we use the category as the inital data of the prop or null if billbpard is not found
 	initialData: Category | null;
+	///we add the Billboard Model from Prisma
+	billboards: Billboard[];
 }
 
 /// Handle the interface below
-export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
+export const CategoryForm: React.FC<CategoryFormProps> = ({
+	initialData,
+	billboards,
+}) => {
 	///we get our params so we can dynamically return to the store id router after update
 	const params = useParams();
 	///we will also need a router
@@ -119,7 +130,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
 		} catch (error) {
 			///even though we have not implemented products and categories, it wont be possible when we are done to delete stores with active products and categories available
 			toast.error(
-				"Make sure you removed all Stores using this category first."
+				"Make sure you removed all Products using this category first."
 			);
 		} finally {
 			///we set the loading to be flase and the setOpen to be false so after we can close the Modal
@@ -210,6 +221,14 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ initialData }) => {
 												/>
 											</SelectTrigger>
 										</FormControl>
+										<SelectContent>
+											{/* We will iterate over our available billboards */}
+											{billboards.map((billboard) => (
+												<SelectItem key={billboard.id} value={billboard.id}>
+													{billboard.label}
+												</SelectItem>
+											))}
+										</SelectContent>
 									</Select>
 									{/* We use form messager to give a proper error if there is a problem in form field */}
 									<FormMessage />

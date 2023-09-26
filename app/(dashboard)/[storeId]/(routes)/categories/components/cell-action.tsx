@@ -15,16 +15,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 
-import { BillboardColumn } from "./columns";
+import { CategoryColumn } from "./columns";
 import { AlertModal } from "@/components/modals/alert-modal";
 
 ///create an interface to handle thew props of the CellAction
 interface CellActionProps {
-	data: BillboardColumn;
+	data: CategoryColumn;
 }
 
 const CellAction: React.FC<CellActionProps> = ({ data }) => {
-	///we will use the Router and params to reroute the billboard to the update page
+	///we will use the Router and params to reroute the category to the update page
 	const router = useRouter();
 	const params = useParams();
 	const [loading, setLoading] = useState(false);
@@ -34,21 +34,21 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
 		///we will use the naviagtor clipboard property and write store the description text as its text that is to be copied
 		navigator.clipboard.writeText(id);
 		///we use Toast to send the success message
-		toast.success("Billboard Id copied to the clipboard");
+		toast.success("Category Id copied to the clipboard");
 	};
 
 	const onDelete = async () => {
 		try {
 			setLoading(true);
 			///we use the axios package to delete the route we establish using the store id
-			await axios.delete(`/api/${params.storeId}/billboards/${data.id}`);
+			await axios.delete(`/api/${params.storeId}/categories/${data.id}`);
 			///then we refresh the router
 			router.refresh();
 			///pass in a success message using toast
-			toast.success("Billboard deleted.");
+			toast.success("Category deleted.");
 		} catch (error) {
 			toast.error(
-				"Make sure you removed all Categories using this billboard first."
+				"Make sure you removed all products using this Category first."
 			);
 		} finally {
 			///we set the loading to be flase and the setOpen to be false so after we can close the Modal
@@ -78,16 +78,16 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
 				<DropdownMenuContent align='end'>
 					<DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-					{/* Copy down of billboard id from data */}
+					{/* Copy down of category id from data */}
 					<DropdownMenuItem onClick={() => onCopy(data.id)}>
 						<Copy className='mr-2 h-4 w-4' />
 						Copy Id
 					</DropdownMenuItem>
 
-					{/* For the update we will reroute to the page of the update  using the current billboard id which is stored in data.id */}
+					{/* For the update we will reroute to the page of the update  using the current category id which is stored in data.id */}
 					<DropdownMenuItem
 						onClick={() =>
-							router.push(`/${params.storeId}/billboards/${data.id}`)
+							router.push(`/${params.storeId}/categories/${data.id}`)
 						}
 					>
 						<Edit className='mr-2 h-4 w-4' />
