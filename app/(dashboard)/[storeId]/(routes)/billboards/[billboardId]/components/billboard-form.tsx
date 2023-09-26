@@ -116,7 +116,7 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 			///then we refresh the router
 			router.refresh();
 			///router.push to reroute back to a particular route after event has been executed
-			router.push("/"); ///which is the root route
+			router.push(`/${params.storeId}/billboards`); ///which is the root route
 
 			///pass in a success message using toast
 			toast.success("Billboard deleted.");
@@ -223,8 +223,6 @@ export const BillboardForm: React.FC<BillboardFormProps> = ({
 					</Button>
 				</form>
 			</Form>
-			{/* We use the separator to differentiate components */}
-			<Separator />
 		</>
 	);
 };

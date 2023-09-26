@@ -7,6 +7,7 @@ import { Heading } from "@/components/ui/heading";
 import { Separator } from "@/components/ui/separator";
 import { BillboardColumn, columns } from "./columns";
 import { DataTable } from "@/components/ui/data-table";
+import ApiList from "@/components/ui/api-list";
 
 ///we create an interface that will handle the data as an argument into the billboard client from the billboardColumn
 interface BillboardClientProps {
@@ -42,6 +43,10 @@ export const BillboardClient: React.FC<BillboardClientProps> = ({ data }) => {
 			{/* 	We will then add a data table here: pass the columns from the one we created in components folder and render the data from the interface   */}
 			{/* /We set the searchkey to label so that is what the prop searches through */}
 			<DataTable columns={columns} data={data} searchKey='label' />
+			{/* /Below the Data table we want to render the API lists for the billboards the way we did on the settings page */}
+			<Heading title='API' description='API calls for Billboards' />
+			<Separator />
+			<ApiList entityName='billboards' entityIdName='billboardId' />
 		</>
 	);
 };
