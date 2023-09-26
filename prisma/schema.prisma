@@ -19,6 +19,7 @@ model Store {
   ///relation works like keys in normal mySql databases so we are relating this billboard to the poarent stores using relation
   billboards Billboard[] @relation("StoreToBillboard")
   categories Category[] @relation("StoreToCategory")
+  sizes Size[] @relation("StoreToSize")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -54,4 +55,18 @@ model Category{
 ///to fix the errors that come with relating the store and billboard Id TO THE MODEL 
   @@index([storeId])
   @@index([billboardId])
+}
+
+
+///Model for Sizes 
+model Size {
+  id String @id @default(uuid())
+  storeId String 
+  store Store @relation("StoreToSize", fields: [storeId], references: [id])
+  name String
+  value String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([storeId])
 }
