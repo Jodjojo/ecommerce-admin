@@ -18,6 +18,7 @@ model Store {
   userId   String
   ///relation works like keys in normal mySql databases so we are relating this billboard to the poarent stores using relation
   billboards Billboard[] @relation("StoreToBillboard")
+  categories Category[] @relation("StoreToCategory")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -30,8 +31,27 @@ model Billboard {
   store Store @relation("StoreToBillboard", fields: [storeId], references: [id])
   label String
   imageUrl String
+  Categories Category[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([storeId]) ///to fix the warning of the store relation using an index declarator 
+}
+
+
+///create a new Model for Categories 
+model Category{
+  id String @id @default(uuid())
+  storeId String
+  store Store @relation("StoreToCategory", fields: [storeId], references: [id])
+  billboardId String 
+  billboard Billboard @relation(fields: [billboardId], references: [id])
+  name String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+
+///to fix the errors that come with relating the store and billboard Id TO THE MODEL 
+  @@index([storeId])
+  @@index([billboardId])
 }

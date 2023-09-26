@@ -28,6 +28,12 @@ export function MainNav({
 			active: pathname === `/${params.storeId}/billboards`,
 		},
 		{
+			///we create a new route on the navigation bar for the categories for the present stores
+			href: `/${params.storeId}/categories`,
+			label: "Categories",
+			active: pathname === `/${params.storeId}/categories`,
+		},
+		{
 			href: `/${params.storeId}/settings`, ///using the store id from the dashboard layout to get the route for the store using the params, so that the settings(which will be created later) when clicked on will be for the active store wkith that store Id
 			label: "Settings",
 			active: pathname === `/${params.storeId}/settings`, ///the active status sets the pathname to the settings of the active store
