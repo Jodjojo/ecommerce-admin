@@ -6,14 +6,14 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import CellAction from "./cell-action";
 
-export type SizeColumn = {
+export type ColorColumn = {
 	id: string;
 	name: string;
 	value: string;
 	createdAt: string;
 };
 
-export const columns: ColumnDef<SizeColumn>[] = [
+export const columns: ColumnDef<ColorColumn>[] = [
 	{
 		///the acessory key must match either the id name, value or createdAT variables we declared in the Column type: used to define the shape of our data
 		accessorKey: "name",
@@ -22,6 +22,16 @@ export const columns: ColumnDef<SizeColumn>[] = [
 	{
 		accessorKey: "value",
 		header: "Value",
+		///we are going to have a special row that will display the color and the original value of the color and fine style
+		cell: ({ row }) => (
+			<div className='flex items-center gap-x-2'>
+				{row.original.value}
+				<div
+					className='h-6 w-6 rounded-full border'
+					style={{ backgroundColor: row.original.value }} ///setting the styling of the row to accomodate tailwing compiling
+				/>
+			</div>
+		),
 	},
 	{
 		accessorKey: "createdAt",
