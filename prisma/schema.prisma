@@ -21,6 +21,7 @@ model Store {
   categories Category[] @relation("StoreToCategory")
   sizes Size[] @relation("StoreToSize")
   colors Color[] @relation("StoreToColor")
+  products Product[] @relation("StoreToProduct")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -48,6 +49,7 @@ model Category{
   store Store @relation("StoreToCategory", fields: [storeId], references: [id])
   billboardId String 
   billboard Billboard @relation(fields: [billboardId], references: [id])
+  products Product[] @relation("CategoryToProduct")
   name String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -66,6 +68,7 @@ model Size {
   store Store @relation("StoreToSize", fields: [storeId], references: [id])
   name String
   value String
+  product Product[] ///to make this a foriegn key for the product model
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -79,8 +82,50 @@ model Color {
   store Store @relation("StoreToColor", fields: [storeId], references: [id])
   name String
   value String
+  product Product[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([storeId])
+}
+
+//model for Products
+model Product {
+  id String @id @default(uuid())
+  storeId String
+  store Store @relation("StoreToProduct", fields: [storeId], references: [id])
+  categoryId String
+  category Category @relation("CategoryToProduct", fields: [categoryId], references: [id])
+  name String
+  price Decimal
+  isFeatured Boolean @default(false)
+  isArchived Boolean @default(false)
+  sizeId String
+  size Size @relation(fields: [sizeId], references: [id])
+  colorId String
+  color Color @relation(fields: [colorId], references: [id])
+  images Image[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+
+///to fix the errors involving calling the other models as a foreign key
+@@index([storeId])
+@@index([sizeId])
+@@index([categoryId])
+@@index([colorId])
+
+}
+
+///creating a model for the multiple images of the Products to connect it to the Product Model 
+model Image{
+  id String @id @default(uuid())
+  productId String
+  ///adding the Ondelete cascade function in order to permit that products containing these images can be deleted without having to delete all the connected images 
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
 }
