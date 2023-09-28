@@ -5,12 +5,19 @@
 import * as z from "zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Image, Product } from "@prisma/client";
+import { Category, Color, Image, Product, Size } from "@prisma/client";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
@@ -18,6 +25,7 @@ import { Separator } from "@/components/ui/separator";
 import {
 	Form,
 	FormControl,
+	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -26,6 +34,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { AlertModal } from "@/components/modals/alert-modal";
 import ImageUpload from "@/components/ui/image-upload";
+import { Checkbox } from "@/components/ui/checkbox";
 
 ///Add the form Schema to store the model for the form using Zod
 const formSchema = z.object({
@@ -54,10 +63,19 @@ interface ProductFormProps {
 				images: Image[];
 		  })
 		| null;
+	///we then add the types we passed into the product Form from the Page.tsx file into the interface
+	categories: Category[];
+	colors: Color[];
+	sizes: Size[];
 }
 
 /// Handle the interface below
-export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
+export const ProductForm: React.FC<ProductFormProps> = ({
+	initialData,
+	categories,
+	colors,
+	sizes,
+}) => {
 	///we get our params so we can dynamically return to the store id router after update
 	const params = useParams();
 	///we will also need a router
@@ -231,16 +249,202 @@ export const ProductForm: React.FC<ProductFormProps> = ({ initialData }) => {
 							render={({ field }) => (
 								<FormItem>
 									{/* Form name is name of form input */}
-									<FormLabel>Label</FormLabel>
+									<FormLabel>Name</FormLabel>
 									<FormControl>
 										<Input
 											disabled={loading}
-											placeholder='Product Label'
+											placeholder='Product Name'
 											{...field} ///we spread the field so the input automatticaly gets all the onChange, onBlur and values from the formfield
 										/>
 									</FormControl>
 									{/* We use form messager to give a proper error if there is a problem in form field */}
 									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						{/*  */}
+						<FormField
+							control={form.control}
+							name='price'
+							///The render prop will render the content in form items
+							render={({ field }) => (
+								<FormItem>
+									{/* Form name is name of form input */}
+									<FormLabel>Price</FormLabel>
+									<FormControl>
+										<Input
+											type='number'
+											disabled={loading}
+											placeholder='9.99'
+											{...field} ///we spread the field so the input automatticaly gets all the onChange, onBlur and values from the formfield
+										/>
+									</FormControl>
+									{/* We use form messager to give a proper error if there is a problem in form field */}
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						{/* We are then using the Same form we used in the catgories section that permits us to select amongst already existing categories, billboards, sizes etc */}
+						<FormField
+							control={form.control}
+							name='categoryId'
+							///The render prop will render the content in form items
+							render={({ field }) => (
+								<FormItem>
+									{/* Form label is label of form input */}
+									<FormLabel>Category</FormLabel>
+									{/* We will use the select component from Shadcn to pick between the billboards */}
+									<Select
+										disabled={loading}
+										onValueChange={field.onChange}
+										value={field.value}
+										defaultValue={field.value}
+									>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue
+													defaultValue={field.value}
+													placeholder='Select a Category'
+												/>
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											{/* We will iterate over our available billboards */}
+											{categories.map((category) => (
+												<SelectItem key={category.id} value={category.id}>
+													{category.name}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+									{/* We use form messager to give a proper error if there is a problem in form field */}
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						{/* SIZES */}
+						<FormField
+							control={form.control}
+							name='sizeId'
+							///The render prop will render the content in form items
+							render={({ field }) => (
+								<FormItem>
+									{/* Form label is label of form input */}
+									<FormLabel>Size</FormLabel>
+									{/* We will use the select component from Shadcn to pick between the billboards */}
+									<Select
+										disabled={loading}
+										onValueChange={field.onChange}
+										value={field.value}
+										defaultValue={field.value}
+									>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue
+													defaultValue={field.value}
+													placeholder='Select a Size'
+												/>
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											{/* We will iterate over our available billboards */}
+											{sizes.map((size) => (
+												<SelectItem key={size.id} value={size.id}>
+													{size.name}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+									{/* We use form messager to give a proper error if there is a problem in form field */}
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						{/* COLORS */}
+						<FormField
+							control={form.control}
+							name='colorId'
+							///The render prop will render the content in form items
+							render={({ field }) => (
+								<FormItem>
+									{/* Form label is label of form input */}
+									<FormLabel>Color</FormLabel>
+									{/* We will use the select component from Shadcn to pick between the billboards */}
+									<Select
+										disabled={loading}
+										onValueChange={field.onChange}
+										value={field.value}
+										defaultValue={field.value}
+									>
+										<FormControl>
+											<SelectTrigger>
+												<SelectValue
+													defaultValue={field.value}
+													placeholder='Select a Color'
+												/>
+											</SelectTrigger>
+										</FormControl>
+										<SelectContent>
+											{/* We will iterate over our available billboards */}
+											{colors.map((color) => (
+												<SelectItem key={color.id} value={color.id}>
+													{color.name}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+									{/* We use form messager to give a proper error if there is a problem in form field */}
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						{/* IsFeatured */}
+						{/* FormField for the IsFeatured Model */}
+						<FormField
+							control={form.control}
+							name='isFeatured'
+							///The render prop will render the content in form items
+							render={({ field }) => (
+								<FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 '>
+									<FormControl>
+										{/* We will use the checkbox for showing whether the isFeatured variable is true or false then pass the checked and onCheckchange props to it*/}
+										<Checkbox
+											checked={field.value}
+											onCheckedChange={field.onChange}
+										/>
+									</FormControl>
+									{/* We create a div to store the label and description of the form */}
+									<div className='space-y-1 leading-none'>
+										<FormLabel>Featured</FormLabel>
+										<FormDescription>
+											This product will appear on the home page.
+										</FormDescription>
+									</div>
+								</FormItem>
+							)}
+						/>
+
+						{/* isArchived */}
+						<FormField
+							control={form.control}
+							name='isArchived'
+							///The render prop will render the content in form items
+							render={({ field }) => (
+								<FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 '>
+									<FormControl>
+										{/* We will use the checkbox for showing whether the isFeatured variable is true or false then pass the checked and onCheckchange props to it*/}
+										<Checkbox
+											checked={field.value}
+											onCheckedChange={field.onChange}
+										/>
+									</FormControl>
+									{/* We create a div to store the label and description of the form */}
+									<div className='space-y-1 leading-none'>
+										<FormLabel>Archived</FormLabel>
+										<FormDescription>
+											This product will not appear anywhere in the store.
+										</FormDescription>
+									</div>
 								</FormItem>
 							)}
 						/>
