@@ -126,7 +126,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 					data
 				);
 			} else {
-				///we want to create a new billboar
+				///we want to create a new product
 				await axios.post(`/api/${params.storeId}/products`, data);
 			}
 			///to resync server component which fetches our store and calls it again to get our new updated data
@@ -159,9 +159,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
 			toast.success("Product deleted.");
 		} catch (error) {
 			///even though we have not implemented products and categories, it wont be possible when we are done to delete stores with active products and categories available
-			toast.error(
-				"Make sure you removed all Categories using this product first."
-			);
+			toast.error("Something went wrong.");
 		} finally {
 			///we set the loading to be flase and the setOpen to be false so after we can close the Modal
 			setLoading(false);

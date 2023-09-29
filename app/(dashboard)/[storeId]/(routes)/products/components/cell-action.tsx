@@ -15,12 +15,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 
-import { BillboardColumn } from "./columns";
+import { ProductColumn } from "./columns";
 import { AlertModal } from "@/components/modals/alert-modal";
 
 ///create an interface to handle thew props of the CellAction
 interface CellActionProps {
-	data: BillboardColumn;
+	data: ProductColumn;
 }
 
 const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -34,22 +34,20 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
 		///we will use the naviagtor clipboard property and write store the description text as its text that is to be copied
 		navigator.clipboard.writeText(id);
 		///we use Toast to send the success message
-		toast.success("Billboard Id copied to the clipboard");
+		toast.success("Product Id copied to the clipboard");
 	};
 
 	const onDelete = async () => {
 		try {
 			setLoading(true);
 			///we use the axios package to delete the route we establish using the store id
-			await axios.delete(`/api/${params.storeId}/billboards/${data.id}`);
+			await axios.delete(`/api/${params.storeId}/products/${data.id}`);
 			///then we refresh the router
 			router.refresh();
 			///pass in a success message using toast
-			toast.success("Billboard deleted.");
+			toast.success("Product deleted.");
 		} catch (error) {
-			toast.error(
-				"Make sure you removed all Categories using this billboard first."
-			);
+			toast.error("Something went wrong.");
 		} finally {
 			///we set the loading to be flase and the setOpen to be false so after we can close the Modal
 			setLoading(false);
@@ -87,7 +85,7 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
 					{/* For the update we will reroute to the page of the update  using the current billboard id which is stored in data.id */}
 					<DropdownMenuItem
 						onClick={() =>
-							router.push(`/${params.storeId}/billboards/${data.id}`)
+							router.push(`/${params.storeId}/products/${data.id}`)
 						}
 					>
 						<Edit className='mr-2 h-4 w-4' />
