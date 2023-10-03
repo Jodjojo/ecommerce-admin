@@ -24,6 +24,10 @@ export async function GET(
 			where: {
 				id: params.categoryId,
 			},
+			///to allow the billboard be reusable in the store front
+			include: {
+				billboard: true,
+			},
 		});
 
 		///then we return the category as a new json body
