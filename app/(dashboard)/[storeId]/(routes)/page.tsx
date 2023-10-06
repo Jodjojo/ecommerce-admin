@@ -8,6 +8,8 @@ import { formatter } from "@/lib/utils";
 import { getSalesCount } from "@/actions/get-sales-count";
 import { getTotalRevenue } from "@/actions/get-total-revenue";
 import { getStockCount } from "@/actions/get-stock-count";
+import { Overview } from "@/components/overview";
+import { getGraphRevenue } from "@/actions/get-graph-revenue";
 
 ///creating a modal interface that will store the store id from the new store modal that was created
 interface DashboardPageProps {
@@ -19,6 +21,9 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
 	const totalRevenue = await getTotalRevenue(params.storeId);
 	const salesCount = await getSalesCount(params.storeId);
 	const stockCount = await getStockCount(params.storeId);
+
+	///function for showing the graph
+	const graphRevenue = await getGraphRevenue(params.storeId);
 	return (
 		<div className='flex-col'>
 			<div className='flex-1 space-y-4 p-8 pt-6'>
@@ -61,6 +66,14 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
 						</CardHeader>
 					</Card>
 				</div>
+				<Card className='col-span-4'>
+					<CardHeader>
+						<CardTitle>Overview</CardTitle>
+					</CardHeader>
+					<CardContent className='pl-2'>
+						<Overview data={graphRevenue} />
+					</CardContent>
+				</Card>
 			</div>
 		</div>
 	);
