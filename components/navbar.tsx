@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { MainNav } from "@/components/main-nav";
 import StoreSwitcher from "@/components/store-switcher";
 import prismadb from "@/lib/prismadb";
+import { ThemeToggle } from "./theme-toggle";
 
 const Navbar = async () => {
 	///We use the navbar component to fetch all the availble stores for active user for the store Switcher
@@ -33,6 +34,8 @@ const Navbar = async () => {
 				{/* This will be the routes ie the Main Nav */}
 				<MainNav className='mx-6' />
 				<div className='ml-auto flex items-center space-x-4'>
+					{/* ///theme toggle for dark mode from shadcn ui */}
+					<ThemeToggle />
 					{/* User button from the Clerk js authentication for the currently logged in user */}
 					{/* We are setting the after signoutUrl to redirect to the root page after sign out */}
 					<UserButton afterSignOutUrl='/' />
