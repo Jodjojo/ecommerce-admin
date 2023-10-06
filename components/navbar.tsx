@@ -26,7 +26,7 @@ const Navbar = async () => {
 
 	return (
 		<div className='border-b'>
-			<div className='flex h-16 items-center px-4 overflow-scroll'>
+			<div className='flex h-16 items-center px-4 overflow-scroll no-scrollbar'>
 				{/* This is where the button for switching stores will stay */}
 				{/*  */}
 				{/* We then pass the stores we found as the items prop into the Store Switcher component */}
